@@ -12,6 +12,8 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
+import androidx.lifecycle.ViewModelProvider;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +22,8 @@ import java.util.List;
  */
 public class AutographingView extends View {
 
-    private List<Point> points = new ArrayList<>();
+    //private List<Point> points = new ArrayList<>();
+    private ListOfPoints pointsOwner;
 
     public AutographingView(Context context) {
         super(context);
@@ -38,26 +41,20 @@ public class AutographingView extends View {
     }
 
     private void init(AttributeSet attrs, int defStyle) {
+    }
 
+    public void setPointsOwner(ListOfPoints l) {
+        this.pointsOwner = l;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        // TODO: consider storing these as member variables to reduce
-        // allocations per draw cycle.
-        int paddingLeft = getPaddingLeft();
-        int paddingTop = getPaddingTop();
-        int paddingRight = getPaddingRight();
-        int paddingBottom = getPaddingBottom();
-
-        int contentWidth = getWidth() - paddingLeft - paddingRight;
-        int contentHeight = getHeight() - paddingTop - paddingBottom;
-
         Paint paint = new Paint(Color.BLACK);
         paint.setStyle(Paint.Style.FILL);
 
+        List<Point> points = pointsOwner.getPoints();
         if (points.size() > 0) {
             Point prev = points.get(0);
             for (int i = 1; i < points.size(); i++) {
@@ -73,7 +70,11 @@ public class AutographingView extends View {
         float px = evt.getX();
         float py = evt.getY();
 
-        points.add(new Point((int) px, (int) py));
+        Point point = new Point((int) px, (int) py);
+        //points.add(point); //TODO!-
+        if (pointsOwner != null) {
+            pointsOwner.addPoint(point);
+        }
         invalidate();
         return true;
     }
