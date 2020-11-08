@@ -6,10 +6,12 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -53,17 +55,25 @@ public class MainActivity extends AppCompatActivity implements ListOfPoints {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        // Android warns you not to use these constants in switch statements.
         int itemId = item.getItemId();
-        switch (itemId)
-        {
-            case R.id.save:
-                //TODO!+
-                break;
-            case R.id.share:
-                //TODO!+
-                break;
-            default:
-                break;
+        if (itemId == R.id.load) {
+            //TODO!+
+        } else if (itemId == R.id.save) {
+            //TODO!+
+        } else if (itemId == R.id.share) {
+            String svg = buildSvg();
+
+            //TODO!- for debugging
+            Toast.makeText(this, svg, Toast.LENGTH_LONG).show();
+
+            Intent share = new Intent(Intent.ACTION_SEND);
+            //TODO?~ Is this the right type for the Intent...?
+            share.setType("image/svg");
+            //TODO?~ Is this the right name for the Intent...?
+            share.putExtra(Intent.EXTRA_STREAM, svg);
+
+            startActivity(share);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -71,7 +81,30 @@ public class MainActivity extends AppCompatActivity implements ListOfPoints {
     private void saveAutograph()
     {
         File file = new File(this.getFilesDir(), "autograph.svg");
+        String svg = buildSvg();
         //TODO!+ Open file, get data from a ViewModel, write it as SVG, close file.
+    }
+
+    private String buildSvg( ) {
+        //TODO!+ Get the proper width and height...
+        String res = "<svg width=\"200\" height=\"200\">";
+        List<Point> points = getPoints();
+
+        StringBuilder pointsList = new StringBuilder();
+        if (points != null) {
+            for (Point point : points) {
+                pointsList.append(" " + point.x + "," + point.y);
+            }
+        }
+
+        res += "<polyline";
+        res += " points=\""+pointsList+"\"";
+        res += " style=\"fill:none;stroke:black;stroke-width:1\"";
+        res += "/>";
+
+        res += "</svg>";
+
+        return res;
     }
 }
 
