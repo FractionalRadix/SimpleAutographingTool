@@ -70,6 +70,10 @@ public class MainActivity extends AppCompatActivity implements ListOfPoints {
             loadAutograph();
         } else if (itemId == R.id.save) {
             saveAutograph();
+        } else if (itemId == R.id.clear) {
+            //TODO?~ Check if viewModel != null at this point?
+            // Also, maybe just make a method "clear" inside the MainActivity.
+            viewModel.clearPoints();
         } else if (itemId == R.id.share) {
             String svg = buildSvg();
 

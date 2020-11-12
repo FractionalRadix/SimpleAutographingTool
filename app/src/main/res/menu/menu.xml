@@ -12,6 +12,11 @@
         android:icon="@drawable/baseline_save_white_48"
         app:showAsAction="ifRoom"/>
 
+    <item android:id="@+id/clear"
+        android:title="Clear"
+        android:icon="@drawable/baseline_clear_white_48"
+        app:showAsAction="ifRoom"/>
+
     <item android:id="@+id/share"
         android:title="@string/share"
         android:icon="@drawable/baseline_share_white_48"
