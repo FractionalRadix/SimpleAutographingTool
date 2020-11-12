@@ -110,7 +110,6 @@ public class MainActivity extends AppCompatActivity implements ListOfPoints {
             return;
         }
 
-        Toast.makeText(this, svg, Toast.LENGTH_LONG).show();
         Log.i(TAG, svg);
         int pointsAttributeIdx = svg.indexOf("points=\"");
         int pointsListStartIdx = pointsAttributeIdx + "points=\"".length();
@@ -118,15 +117,12 @@ public class MainActivity extends AppCompatActivity implements ListOfPoints {
         Log.i(TAG, pointsAttributeIdx +  " " + pointsListStartIdx + " " + pointsListEndIdx);
         String pointsList = svg.substring(pointsListStartIdx, pointsListEndIdx);
 
-        //TODO!- FOR DEBUGGING
-        Toast.makeText(this, pointsList, Toast.LENGTH_LONG).show();
-
         // "pointsList" now consists of a list of coordinates.
         // Separated by whitespace, each pair of coordinates is of the form "x,y", where x and y are integers.
         String[] arrayOfCoordinates = pointsList.split(" ");
+        List<Point> loadedPoints = new ArrayList<>();
         for (String currentCoordinates : arrayOfCoordinates) {
             // It is possible that some of the elements in the array are just whitespace. Let's avoid that.
-            Log.i(TAG, "coordinates: [" + currentCoordinates +"]");
             String trimmedCoordinates = currentCoordinates.trim();
             if (trimmedCoordinates.length() > 0)
             {
@@ -134,9 +130,16 @@ public class MainActivity extends AppCompatActivity implements ListOfPoints {
                 //TODO!+ Handle the case that coordinatePair.length != 2
                 int x = Integer.parseInt(coordinatePair[0]); //TODO!+ Handle parser failure
                 int y = Integer.parseInt(coordinatePair[1]); //TODO!+ Handle parser failure
-                addPoint(new Point(x,y)); //TODO?~ Make a list first, and only if everything goes right, display it?
+                loadedPoints.add(new Point(x, y));
                 //TODO!+ After all points are added, force a refresh ?
             }
+        }
+
+        // Now that all points are parsed, add them to the Model.
+        //TODO?~ Can we be certain that viewModel != null at this point?
+        viewModel.clearPoints();
+        for (Point p : loadedPoints) {
+            this.addPoint(p);
         }
 
     }
@@ -157,10 +160,6 @@ public class MainActivity extends AppCompatActivity implements ListOfPoints {
                     break;
                 res.append((char) ch);
             }
-
-            //TODO!- FOR TESTING
-            Toast.makeText(this, res, Toast.LENGTH_LONG).show();
-
             return res.toString();
         } catch (FileNotFoundException fnfe) {
             Toast.makeText(this, "Cannot open file \"" + filename + "\"", Toast.LENGTH_LONG).show();

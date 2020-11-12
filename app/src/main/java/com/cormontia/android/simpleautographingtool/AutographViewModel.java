@@ -19,4 +19,9 @@ public class AutographViewModel extends ViewModel {
     MutableLiveData<List<Point>> getPoints( ) {
         return points;
     }
+
+    void clearPoints() {
+        points.getValue().clear();
+        //points.setValue(new ArrayList<Point>());
+    }
 }
