@@ -38,6 +38,8 @@ public class MainActivity extends AppCompatActivity implements ListOfPoints {
         viewModel = new ViewModelProvider(this).get(AutographViewModel.class);
         AutographingView autographingView = findViewById(R.id.autographingView);
         autographingView.setPointsOwner(this);
+        viewModel.getPoints().observe(this,
+                dummy -> autographingView.invalidate()); //TODO!~ Respond more subtly to changes in the LiveData.
     }
 
     @Override
