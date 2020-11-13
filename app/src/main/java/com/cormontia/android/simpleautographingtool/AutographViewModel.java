@@ -21,7 +21,6 @@ public class AutographViewModel extends ViewModel {
     }
 
     void clearPoints() {
-        points.getValue().clear();
-        //points.setValue(new ArrayList<Point>());
+        points.setValue(new ArrayList<Point>());
     }
 }
