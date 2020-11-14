@@ -73,8 +73,6 @@ public class MainActivity extends AppCompatActivity implements ListOfPoints {
         } else if (itemId == R.id.save) {
             saveAutograph();
         } else if (itemId == R.id.clear) {
-            //TODO?~ Check if viewModel != null at this point?
-            // Also, maybe just make a method "clear" inside the MainActivity.
             viewModel.clearPoints();
         } else if (itemId == R.id.share) {
             String svg = SvgBuilder.buildSvg(getPoints());
@@ -116,32 +114,9 @@ public class MainActivity extends AppCompatActivity implements ListOfPoints {
             return;
         }
 
-        Log.i(TAG, svg);
-        int pointsAttributeIdx = svg.indexOf("points=\"");
-        int pointsListStartIdx = pointsAttributeIdx + "points=\"".length();
-        int pointsListEndIdx = svg.indexOf("\"", pointsListStartIdx);
-        Log.i(TAG, pointsAttributeIdx +  " " + pointsListStartIdx + " " + pointsListEndIdx);
-        String pointsList = svg.substring(pointsListStartIdx, pointsListEndIdx);
-
-        // "pointsList" now consists of a list of coordinates.
-        // Separated by whitespace, each pair of coordinates is of the form "x,y", where x and y are integers.
-        String[] arrayOfCoordinates = pointsList.split(" ");
-        List<Point> loadedPoints = new ArrayList<>();
-        for (String currentCoordinates : arrayOfCoordinates) {
-            // It is possible that some of the elements in the array are just whitespace. Let's avoid that.
-            String trimmedCoordinates = currentCoordinates.trim();
-            if (trimmedCoordinates.length() > 0)
-            {
-                String[] coordinatePair = trimmedCoordinates.split(",");
-                //TODO!+ Handle the case that coordinatePair.length != 2
-                int x = Integer.parseInt(coordinatePair[0]); //TODO!+ Handle parser failure
-                int y = Integer.parseInt(coordinatePair[1]); //TODO!+ Handle parser failure
-                loadedPoints.add(new Point(x, y));
-            }
-        }
+        List<Point> loadedPoints = SvgBuilder.parseSvg(svg);
 
         // Now that all points are parsed, add them to the Model.
-        //TODO?~ Can we be certain that viewModel != null at this point?
         viewModel.clearPoints();
         for (Point p : loadedPoints) {
             this.addPoint(p);

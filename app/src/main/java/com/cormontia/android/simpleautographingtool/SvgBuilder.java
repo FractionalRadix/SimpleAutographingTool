@@ -1,10 +1,14 @@
 package com.cormontia.android.simpleautographingtool;
 
 import android.graphics.Point;
+import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SvgBuilder {
+
+    private static final String TAG = "SimpleAutographTool";
 
     public static String buildSvg(List<Point> points) {
 
@@ -54,4 +58,41 @@ public class SvgBuilder {
         }
         return new Point(maxX, maxY);
     }
+
+    public static List<Point> parseSvg(String svg) {
+        Log.i(TAG, svg);
+        int pointsAttributeIdx = svg.indexOf("points=\"");
+        int pointsListStartIdx = pointsAttributeIdx + "points=\"".length();
+        int pointsListEndIdx = svg.indexOf("\"", pointsListStartIdx);
+        Log.i(TAG, pointsAttributeIdx +  " " + pointsListStartIdx + " " + pointsListEndIdx);
+        String pointsList = svg.substring(pointsListStartIdx, pointsListEndIdx);
+
+        // "pointsList" now consists of a list of coordinates.
+        // Separated by whitespace, each pair of coordinates is of the form "x,y", where x and y are integers.
+        String[] arrayOfCoordinates = pointsList.split(" ");
+        List<Point> loadedPoints = new ArrayList<>();
+        for (String currentCoordinates : arrayOfCoordinates) {
+            // It is possible that some of the elements in the array are just whitespace. Let's avoid that.
+            String trimmedCoordinates = currentCoordinates.trim();
+            if (trimmedCoordinates.length() > 0)
+            {
+                String[] coordinatePair = trimmedCoordinates.split(",");
+                if (coordinatePair.length != 2) {
+                    Log.e(TAG, "Syntax error while parsing list of integers - set of coordinates has wrong amount of numbers.");
+                }
+                try {
+                    if (coordinatePair[0] == null || coordinatePair[1] == null) {
+                        Log.e(TAG, "Encountered a NULL while parsing the list of points.");
+                    }
+                    int x = Integer.parseInt(coordinatePair[0]);
+                    int y = Integer.parseInt(coordinatePair[1]);
+                    loadedPoints.add(new Point(x, y));
+                } catch (NumberFormatException exc) {
+                    Log.e(TAG, "Failed to parse an integer, while parsing the list of points.");
+                }
+            }
+        }
+        return loadedPoints;
+    }
+
 }
