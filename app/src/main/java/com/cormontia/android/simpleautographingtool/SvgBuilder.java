@@ -12,8 +12,17 @@ public class SvgBuilder {
 
     public static String buildSvg(List<Point> points) {
 
-        Point leftBottom = maxPoint(points);
-        String res = "<svg width=\""+ leftBottom.x + "\" height=\"" + leftBottom.y + "\">";
+        Point leftBottom = maxPoint(points); //TODO?~ Isn't that thr _right_handside bottom point?
+        //String res = "<svg width=\""+ leftBottom.x + "\" height=\"" + leftBottom.y + "\">";
+        String res = "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>";
+        res += "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">";
+        res += "<svg version=\"1.1\" ";
+        res += "width=\""+ leftBottom.x + "\" height=\"" + leftBottom.y + " ";
+
+        res += "xmlns=\"http://www.w3.org/2000/svg\" ";
+        res += "xmlns:xlink=\"http://www.w3.org/1999/xlink\"";
+        res += ">";
+
 
         res += "<polyline";
         res += " " + determinePointsAttribute(points);
